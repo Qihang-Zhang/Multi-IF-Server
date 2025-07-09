@@ -1,0 +1,21 @@
+[project]
+name = "multi-if-server"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "accelerate>=1.8.1",
+    "anthropic>=0.57.1",
+    "emoji>=2.14.1",
+    "google-generativeai>=0.8.5",
+    "langdetect>=1.0.9",
+    "mistralai>=1.9.1",
+    "nltk>=3.9.1",
+    "openai>=1.93.3",
+    "pandas>=2.3.1",
+    "pythainlp>=5.1.2",
+    "scipy>=1.16.0",
+    "six>=1.17.0",
+    "transformers>=4.53.1",
+]

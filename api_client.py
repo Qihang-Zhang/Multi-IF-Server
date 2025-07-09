@@ -18,6 +18,7 @@ import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 from mistralai import Mistral
 from openai import OpenAI
+import openai
 
 from utils import GenerationSetting
 
@@ -31,6 +32,10 @@ def get_api_bot(model_name, generation_setting):
         return GeminiBot(model_name, generation_setting)
     elif MistralBot.check_name(model_name):
         return MistralBot(model_name, generation_setting)
+    elif sglangBot.check_name(model_name):
+        return sglangBot(model_name, generation_setting)
+    elif vllmBot.check_name(model_name):
+        return vllmBot(model_name, generation_setting)
     else:
         raise NotImplementedError(f"The model {model_name} is not supported yet.")
 
@@ -80,7 +85,28 @@ class OpenAIBot(APIBot):
                 ]:
             return True
         return False
+    
+class sglangBot(OpenAIBot):
+    def __init__(self, model, generation_config):
+        super().__init__(model, generation_config)
+        self.client = openai.Client(base_url=f"http://127.0.0.1:30000/v1", api_key="None")
 
+    @staticmethod
+    def check_name(name):
+        if name in ['sglang']:
+            return True
+        return False
+    
+class vllmBot(OpenAIBot):
+    def __init__(self, model, generation_config):
+        super().__init__(model, generation_config)
+        self.client = openai.Client(base_url=f"http://localhost:8000/v1", api_key="None")
+
+    @staticmethod
+    def check_name(name):
+        if name in ['vllm']:
+            return True
+        return False
 
 class AnthropicBot(APIBot):
     def __init__(self, model, generation_config):
