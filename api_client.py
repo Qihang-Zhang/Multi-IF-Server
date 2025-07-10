@@ -88,6 +88,7 @@ class OpenAIBot(APIBot):
     
 class sglangBot(OpenAIBot):
     def __init__(self, model, generation_config):
+        os.environ["OPENAI_API_KEY"] = "1"
         super().__init__(model, generation_config)
         self.client = openai.Client(base_url=f"http://127.0.0.1:30000/v1", api_key="None")
 
@@ -99,6 +100,7 @@ class sglangBot(OpenAIBot):
     
 class vllmBot(OpenAIBot):
     def __init__(self, model, generation_config):
+        os.environ["OPENAI_API_KEY"] = "1"
         super().__init__(model, generation_config)
         self.client = openai.Client(base_url=f"http://localhost:8000/v1", api_key="None")
 
