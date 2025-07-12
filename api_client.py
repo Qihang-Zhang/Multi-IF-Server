@@ -86,11 +86,25 @@ class OpenAIBot(APIBot):
             return True
         return False
     
-class sglangBot(OpenAIBot):
-    def __init__(self, model, generation_config):
-        os.environ["OPENAI_API_KEY"] = "1"
+class OpenAICompatibleBot(APIBot):
+    def __init__(self, model: str, generation_config, base_url: str):
         super().__init__(model, generation_config)
-        self.client = openai.Client(base_url=f"http://127.0.0.1:30000/v1", api_key="None")
+        self.client = OpenAI(base_url=base_url, api_key="EMPTY")
+
+    def generate(self, messages) -> str:
+        response = self.client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            max_completion_tokens=self.generation_config.max_new_tokens,
+            seed=self.generation_config.seed,
+            top_p=self.generation_config.top_p,
+            temperature=self.generation_config.temperature
+        )
+        return response.choices[0].message.content
+
+class sglangBot(OpenAICompatibleBot):
+    def __init__(self, model, generation_config):
+        super().__init__(model, generation_config, base_url="http://127.0.0.1:30000/v1")
 
     @staticmethod
     def check_name(name):
@@ -98,11 +112,9 @@ class sglangBot(OpenAIBot):
             return True
         return False
     
-class vllmBot(OpenAIBot):
+class vllmBot(OpenAICompatibleBot):
     def __init__(self, model, generation_config):
-        os.environ["OPENAI_API_KEY"] = "1"
-        super().__init__(model, generation_config)
-        self.client = openai.Client(base_url=f"http://localhost:8000/v1", api_key="None")
+        super().__init__(model, generation_config, base_url="http://127.0.0.1:8000/v1")
 
     @staticmethod
     def check_name(name):
